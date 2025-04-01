@@ -238,7 +238,7 @@ export default function Explore() {
             you just know there are ten possibilities: 0, 1, 2, 3, 4, 5, 6, 7, 8, or 9. Let us begin training.
           </p>
           <p>
-            <strong>Round 1:</strong> Examine the image of a handwritten “0.” 
+            <strong>Round 1:</strong> Examine the image of a handwritten &quot;0.&quot; 
           </p>
           <Image 
             src="/photos/handwritten0.png" 
@@ -249,9 +249,9 @@ export default function Explore() {
           /> 
           <p>
             Since you&apos;ve never
-            seen a number before, you randomly guess one of the ten options, say, “1.” Immediately,
-            you&apos;re told the guess was wrong, and that the correct answer is “0.” So, you start looking
-            for a pattern. You notice the “0” has a loop with empty space in the middle.
+            seen a number before, you randomly guess one of the ten options, say, &quot;1.&quot; Immediately,
+            you&apos;re told the guess was wrong, and that the correct answer is &quot;0.&quot; So, you start looking
+            for a pattern. You notice the &quot;0&quot; has a loop with empty space in the middle.
           </p>
           <p>
             <strong>Round 2:</strong> 
@@ -264,9 +264,9 @@ export default function Explore() {
             className="mx-auto rounded-md shadow-md"
           /> 
           <p>
-            Examine a different handwritten “0.” This time, remembering
-            the loop pattern you associated with “0,” you confidently say “0.” You&apos;re correct! You now
-            reinforce your understanding that a loop likely indicates a “0.”
+            Examine a different handwritten &quot;0.&quot; This time, remembering
+            the loop pattern you associated with &quot;0,&quot; you confidently say &quot;0.&quot; You&apos;re correct! You now
+            reinforce your understanding that a loop likely indicates a &quot;0.&quot;
           </p>
           <p>
             <strong>Round 3:</strong> 
@@ -279,18 +279,18 @@ export default function Explore() {
             className="mx-auto rounded-md shadow-md"
           />  
           <p>
-            Examine an image of a handwritten “9.” You guess “0” again.
-            You&apos;re told that it is actually a “9.” Surprised, you adjust your methodology: if you see a
-            loop, it could be “0” or “9,” but a line attached to that loop makes it more likely a “9.”
+            Examine an image of a handwritten &quot;9.&quot; You guess &quot;0&quot; again.
+            You&apos;re told that it is actually a &quot;9.&quot; Surprised, you adjust your methodology: if you see a
+            loop, it could be &quot;0&quot; or &quot;9,&quot; but a line attached to that loop makes it more likely a &quot;9.&quot;
           </p>
           <p>
             Now let&apos;s do that a thousand times, with a thousand different examples of digits. After
-            seeing a hundred different “9”&apos;s, you get pretty good at recognizing it. The more unique
+            seeing a hundred different &quot;9&quot;&apos;s, you get pretty good at recognizing it. The more unique
             handwriting you see, the better you are at identifying numbers that are written messy or
             with a different font.
           </p>
           <p>
-            In reality, AI doesn&apos;t think exactly like humans do. Machines don&apos;t literally “see” or “think”
+            In reality, AI doesn&apos;t think exactly like humans do. Machines don&apos;t literally &quot;see&quot; or &quot;think&quot;
             about loops or lines in the casual way we do. Instead, their decision-making relies on
             mathematical patterns and numerical calculations. However, the fundamental idea remains
             simple: AI systems improve their predictions by analyzing many examples and learning from
@@ -342,7 +342,7 @@ export default function Explore() {
             Let&apos;s walk through using a real neural network. I will show you how to use the tool I made.
             Let&apos;s start by selecting a dataset. We can choose from the Boston Housing, California Housing,
             Diabetes Progression, and Iris classification datasets. For specific information, click the
-            “Info” button next to the dropdown menu after choosing the dataset.
+            &quot;Info&quot; button next to the dropdown menu after choosing the dataset.
           </p>
           <Image 
             src="/photos/dataset.png" 
@@ -388,7 +388,7 @@ export default function Explore() {
             className="mx-auto rounded-md shadow-md"
           /> 
           <p>
-            Finally, we can press “Train Model.” Once finished, if we click on the “Loss Graph” header,
+            Finally, we can press &quot;Train Model.&quot; Once finished, if we click on the &quot;Loss Graph&quot; header,
             we will see our loss epoch graph. Loss measures how far the neural network&apos;s predictions
             are from the actual values, and epochs are simply the number of times the model goes through
             the entire training dataset.
