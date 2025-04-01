@@ -1,11 +1,11 @@
 "use client";
 import Header from "../components/Header"
-import Explore from "../components/Explore";
+import NeuralNetwork from "../components/NeuralNetwork";
 
 export default function NeuralNetworkPage() {
   return (
     <main>
-      <Explore />
+      <NeuralNetwork />
     </main>
   );
 }
