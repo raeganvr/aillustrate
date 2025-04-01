@@ -311,7 +311,7 @@ export default function Explore() {
           </p>
           <p>
             • <strong>Input Nodes:</strong> These are like your eyes, seeing the handwritten digits.<br />
-            • <strong>Hidden Nodes:</strong> Think of these as your "thinking steps," detecting features
+            • <strong>Hidden Nodes:</strong> Think of these as your &quot;thinking steps,&quot; detecting features
               like loops, curves, or straight lines.<br />
             • <strong>Output Nodes:</strong> These give your final answer—which digit(s) you think
               you&apos;ve recognized.
@@ -365,7 +365,7 @@ export default function Explore() {
           /> 
           <p>
             Now that we know our dataset and our testing/training separation, we can start building our
-            input layer. Click on the input dropdown menu "Input Parameters." Here you can select inputs
+            input layer. Click on the input dropdown menu &quot;Input Parameters.&quot; Here you can select inputs
             from the dataset that you wish to provide to your network for learning.
           </p>
           <Image 
