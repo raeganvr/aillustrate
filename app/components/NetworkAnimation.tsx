@@ -103,11 +103,4 @@ export default function NetworkAnimation() {
   );
 }
 
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  update(): void;
-  draw(): void;
-}
+

@@ -1,5 +1,4 @@
 "use client";
-import Header from "../components/Header"
 import Explore from "../components/Explore";
 
 export default function NeuralNetworkPage() {

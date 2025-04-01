@@ -196,7 +196,7 @@ export default function Explore() {
             step-by-step.
           </p>
           <p>
-            But let's take an example: Imagine teaching a computer to recognize handwritten
+            But let&apos;s take an example: Imagine teaching a computer to recognize handwritten
             numbers. Every person writes numbers differently, making it nearly impossible to
             manually program specific instructions to handle every style of handwriting.
           </p>
@@ -214,7 +214,7 @@ export default function Explore() {
             handwritten numbers from 0 to 9.
           </p>
           <p>
-            Traditionally, you'd have to write a complex set of instructions describing exactly
+            Traditionally, you&apos;d have to write a complex set of instructions describing exactly
             how each digit (0-9) should look, specifying the curves, points, angles, and strokes
             involved. Given how differently each person writes numbers, this becomes nearly
             impossible to program explicitly.
@@ -314,12 +314,12 @@ export default function Explore() {
             • <strong>Hidden Nodes:</strong> Think of these as your "thinking steps," detecting features
               like loops, curves, or straight lines.<br />
             • <strong>Output Nodes:</strong> These give your final answer—which digit(s) you think
-              you've recognized.
+              you&apos;ve recognized.
           </p>
           <p>
             Each node and connection represents a small rule or piece of evidence. For example,
             one hidden node might activate more if it detects a loop, another might activate if it
-            sees a vertical line, and another might check if there's space within the loop. The
+            sees a vertical line, and another might check if there&apos;s space within the loop. The
             combination of these activations leads the neural network to eventually prefer one digit
             more than the others.
           </p>
@@ -340,7 +340,7 @@ export default function Explore() {
         <>
           <p>
             Let’s walk through using a real neural network. I will show you how to use the tool I made.
-            Let's start by selecting a dataset. We can choose from the Boston Housing, California Housing,
+            Let&apos;s start by selecting a dataset. We can choose from the Boston Housing, California Housing,
             Diabetes Progression, and Iris classification datasets. For specific information, click the
             “Info” button next to the dropdown menu after choosing the dataset.
           </p>
@@ -389,7 +389,7 @@ export default function Explore() {
           /> 
           <p>
             Finally, we can press “Train Model.” Once finished, if we click on the “Loss Graph” header,
-            we will see our loss epoch graph. Loss measures how far the neural network's predictions
+            we will see our loss epoch graph. Loss measures how far the neural network&apos;s predictions
             are from the actual values, and epochs are simply the number of times the model goes through
             the entire training dataset.
           </p>
@@ -422,35 +422,9 @@ export default function Explore() {
     },
   ];
 
-  // Track which section is active (optional) if you want advanced highlighting
-  const [activeSection, setActiveSection] = useState("");
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      {
-        rootMargin: "0px 0px -50% 0px",
-        threshold: 0.1,
-      }
-    );
-
-    sections.forEach(({ id }) => {
-      const element = document.getElementById(id);
-      if (element) observer.observe(element);
-    });
-
-    return () => observer.disconnect();
-  }, [sections]);
 
   return (
     <div className="relative w-full min-h-screen bg-black text-white font-sans">
-      {/* Side panel that fades in after scrolling */}
       <SideContents sections={sections.map(({ id, title }) => ({ id, title }))} />
 
       {/* Main content container */}

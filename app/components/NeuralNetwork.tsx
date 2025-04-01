@@ -117,17 +117,18 @@ export default function NetworkPage() {
     }));
   };
   
-  const handleNodeRemove = (layerIndex: number, nodeIndex: number) => {
+  const handleNodeRemove = (layerIndex: number, _nodeIndex: number) => {
+    if (model.layers[layerIndex].nodes <= 1) return;
+  
     setModel((prev) => ({
       ...prev,
       layers: prev.layers.map((layer, i) =>
-        i === layerIndex ? { ...layer, nodes: Math.max(1, layer.nodes - 1) } : layer
+        i === layerIndex ? { ...layer, nodes: layer.nodes - 1 } : layer
       ),
     }));
   };
   
   const [lossGraphData, setLossGraphData] = useState<{ epoch: number; loss: number; val_loss: number }[]>([]);
-  const [isTraining, setIsTraining] = useState(false);
   const handleTrain = async () => {
     const hasSelectedParams = model.parameters?.some((param) => param.selected);
     if (!hasSelectedParams) {
@@ -135,7 +136,6 @@ export default function NetworkPage() {
       return;
     }
   
-    setIsTraining(true);
     setLossGraphData([]);
 
     try {
@@ -160,8 +160,8 @@ export default function NetworkPage() {
 
           if (parsed.done) {
             eventSource.close();
-            setIsTraining(false);
 
+            
             // 3. Once stream is done, fetch final metrics
             const finalRes = await fetch("http://127.0.0.1:8000/train/final");
             const finalData = await finalRes.json();
@@ -186,11 +186,9 @@ export default function NetworkPage() {
       eventSource.onerror = (err) => {
         console.error("SSE error:", err);
         eventSource.close();
-        setIsTraining(false);
       };
     } catch (error) {
       console.error("Error during training:", error);
-      setIsTraining(false);
     }
   };
 

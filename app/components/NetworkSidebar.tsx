@@ -55,11 +55,7 @@ export function NetworkSidebar({
   const [showModal, setShowModal] = useState(false);
   const [showTestSizeInfo, setShowTestSizeInfo] = useState(false); // info for the test size slider
 
-  const selectedInputs = model.parameters?.filter((param) => param.selected).length;
   const allSelected = !!model.parameters?.length && model.parameters.every((p) => p.selected);
-
-  // Current dataset details (for the "Info" modal)
-  const currentDataset = datasetOptions.find((ds) => ds.abbreviation === selectedDataset);
 
   // Toggle All Input Parameters
   const handleToggleAll = () => {
