@@ -175,7 +175,7 @@ export default function Explore() {
         <>
           <p>
             Artificial Intelligence, or AI, is changing the way we live, communicate, and learn.
-            You’ve probably heard or even used AI in situations like chatting with ChatGPT,
+            You&apos;ve probably heard or even used AI in situations like chatting with ChatGPT,
             using virtual assistants like Siri or Alexa, or viewing personalized movie
             recommendations on Netflix. But what exactly is AI, and how does it work?
           </p>
@@ -210,7 +210,7 @@ export default function Explore() {
         <>
           <p>
             With Machine Learning, a specific type of AI, we teach computers to learn on
-            their own by providing lots of examples. Let’s say we want our AI to recognize
+            their own by providing lots of examples. Let&apos;s say we want our AI to recognize
             handwritten numbers from 0 to 9.
           </p>
           <p>
@@ -234,7 +234,7 @@ export default function Explore() {
       content: (
         <>
           <p>
-            Let’s imagine you are the AI. Right now, you have no idea what any digits look like,
+            Let&apos;s imagine you are the AI. Right now, you have no idea what any digits look like,
             you just know there are ten possibilities: 0, 1, 2, 3, 4, 5, 6, 7, 8, or 9. Let us begin training.
           </p>
           <p>
@@ -248,9 +248,9 @@ export default function Explore() {
             className="mx-auto rounded-md shadow-md"
           /> 
           <p>
-            Since you’ve never
+            Since you&apos;ve never
             seen a number before, you randomly guess one of the ten options, say, “1.” Immediately,
-            you’re told the guess was wrong, and that the correct answer is “0.” So, you start looking
+            you&apos;re told the guess was wrong, and that the correct answer is “0.” So, you start looking
             for a pattern. You notice the “0” has a loop with empty space in the middle.
           </p>
           <p>
@@ -265,7 +265,7 @@ export default function Explore() {
           /> 
           <p>
             Examine a different handwritten “0.” This time, remembering
-            the loop pattern you associated with “0,” you confidently say “0.” You’re correct! You now
+            the loop pattern you associated with “0,” you confidently say “0.” You&apos;re correct! You now
             reinforce your understanding that a loop likely indicates a “0.”
           </p>
           <p>
@@ -280,17 +280,17 @@ export default function Explore() {
           />  
           <p>
             Examine an image of a handwritten “9.” You guess “0” again.
-            You’re told that it is actually a “9.” Surprised, you adjust your methodology: if you see a
+            You&apos;re told that it is actually a “9.” Surprised, you adjust your methodology: if you see a
             loop, it could be “0” or “9,” but a line attached to that loop makes it more likely a “9.”
           </p>
           <p>
-            Now let’s do that a thousand times, with a thousand different examples of digits. After
-            seeing a hundred different “9”’s, you get pretty good at recognizing it. The more unique
+            Now let&apos;s do that a thousand times, with a thousand different examples of digits. After
+            seeing a hundred different “9”&apos;s, you get pretty good at recognizing it. The more unique
             handwriting you see, the better you are at identifying numbers that are written messy or
             with a different font.
           </p>
           <p>
-            In reality, AI doesn’t think exactly like humans do. Machines don’t literally “see” or “think”
+            In reality, AI doesn&apos;t think exactly like humans do. Machines don&apos;t literally “see” or “think”
             about loops or lines in the casual way we do. Instead, their decision-making relies on
             mathematical patterns and numerical calculations. However, the fundamental idea remains
             simple: AI systems improve their predictions by analyzing many examples and learning from
@@ -339,7 +339,7 @@ export default function Explore() {
       content: (
         <>
           <p>
-            Let’s walk through using a real neural network. I will show you how to use the tool I made.
+            Let&apos;s walk through using a real neural network. I will show you how to use the tool I made.
             Let&apos;s start by selecting a dataset. We can choose from the Boston Housing, California Housing,
             Diabetes Progression, and Iris classification datasets. For specific information, click the
             “Info” button next to the dropdown menu after choosing the dataset.
@@ -352,7 +352,7 @@ export default function Explore() {
             className="mx-auto rounded-md shadow-md"
           /> 
           <p>
-            Next, let’s discuss Test Size. Test size tells the neural network how much of this data we
+            Next, let&apos;s discuss Test Size. Test size tells the neural network how much of this data we
             want to use for training (learning). This is key because it helps determine how well our
             model will perform on new, unseen data.
           </p>
@@ -404,7 +404,7 @@ export default function Explore() {
             At the top of the sidebar, you will see the final Mean Absolute Error (MAE) percentage for
             regression datasets, or accuracy for classification datasets. By experimenting—changing
             inputs, adding or removing layers, or tweaking other settings—you discover how each choice
-            impacts the neural network’s ability to learn and predict accurately.
+            impacts the neural network&apos;s ability to learn and predict accurately.
           </p>
           <Image 
             src="/photos/mae.png" 
@@ -415,7 +415,7 @@ export default function Explore() {
           />  
           <p>
             By experimenting, changing inputs, adding or removing layers, or tweaking other settings, 
-            you discover how each choice impacts the neural network’s ability to learn and predict accurately.
+            you discover how each choice impacts the neural network&apos;s ability to learn and predict accurately.
           </p>
         </>
       ),

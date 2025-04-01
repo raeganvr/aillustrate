@@ -117,13 +117,11 @@ export default function NetworkPage() {
     }));
   };
   
-  const handleNodeRemove = (layerIndex: number, _nodeIndex: number) => {
-    if (model.layers[layerIndex].nodes <= 1) return;
-  
+  const handleNodeRemove = (layerIndex: number) => {
     setModel((prev) => ({
       ...prev,
       layers: prev.layers.map((layer, i) =>
-        i === layerIndex ? { ...layer, nodes: layer.nodes - 1 } : layer
+        i === layerIndex ? { ...layer, nodes: Math.max(1, layer.nodes - 1) } : layer
       ),
     }));
   };
