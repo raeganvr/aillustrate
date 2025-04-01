@@ -21,7 +21,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",  # for local development
+        "https://interactive-ai-green.vercel.app"  # for production
+    ],    
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

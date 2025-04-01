@@ -45,13 +45,17 @@ export default function NetworkPage() {
       name: "Iris Classification",
     },
   ];
-
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE;
+  if (!baseUrl) {
+    throw new Error("NEXT_PUBLIC_API_BASE is not defined in the environment variables.");
+  }
+  
   // Fetch dataset features only once when the component mounts
   useEffect(() => {
     const fetchFeatures = async () => {
       try {
         // Optionally, update the URL to include the selected dataset:
-        const response = await fetch(`http://127.0.0.1:8000/features/${model.datasetName}`);
+        const response = await fetch(`${baseUrl}/features/${model.datasetName}`);
         const data = await response.json();
 
         setModel((prevModel) => ({
@@ -138,7 +142,7 @@ export default function NetworkPage() {
 
     try {
       // 1. Init model on backend
-      const initRes = await fetch("http://127.0.0.1:8000/train/init", {
+      const initRes = await fetch("${baseUrl}/train/init", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(model),
@@ -149,7 +153,7 @@ export default function NetworkPage() {
       }
 
       // 2. Begin streaming training updates
-      const eventSource = new EventSource("http://127.0.0.1:8000/train/stream");
+      const eventSource = new EventSource("${baseUrl}/train/stream");
       const updates: { epoch: number; loss: number; val_loss: number }[] = [];
 
       eventSource.onmessage = async (event) => {
@@ -161,7 +165,7 @@ export default function NetworkPage() {
 
             
             // 3. Once stream is done, fetch final metrics
-            const finalRes = await fetch("http://127.0.0.1:8000/train/final");
+            const finalRes = await fetch("${baseUrl}/train/final");
             const finalData = await finalRes.json();
 
             setModel((prev) => ({
