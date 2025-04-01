@@ -24,6 +24,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",  # for local development
         "https://interactive-ai.onrender.com"  # for production
+        "https://interactive-ai-green.vercel.app"  
+
     ],    
     allow_credentials=True,
     allow_methods=["*"],
