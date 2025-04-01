@@ -23,7 +23,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # for local development
-        "https://interactive-ai-green.vercel.app"  # for production
+        "https://interactive-ai.onrender.com"  # for production
     ],    
     allow_credentials=True,
     allow_methods=["*"],
