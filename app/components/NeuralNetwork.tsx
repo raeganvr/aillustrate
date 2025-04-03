@@ -169,7 +169,7 @@ export default function NetworkPage() {
 
             
             // Once stream is done, fetch final metrics
-            const finalRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/train/final`); 
+            const finalRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/train`); 
             const finalData = await finalRes.json();
 
             setModel((prev) => ({
