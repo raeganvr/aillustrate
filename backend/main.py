@@ -76,9 +76,16 @@ def load_dataset(dataset_name: str, selected_features=None, test_size=0.4):
     if df is None:
         return None, None, None, None, None
 
-    y = df[target_column].values if dataset_name == "boston" else df.iloc[:, -1].values
     if dataset_name == "iris":
         y = to_categorical(load_iris().target)
+    elif dataset_name == "boston":
+        y = df[target_column].values
+    elif dataset_name == "california":
+        y = fetch_california_housing().target  # ✅ was using wrong column before
+    elif dataset_name == "diabetes":
+        y = load_diabetes().target  # ✅ fix for real target
+    else:
+        y = df.iloc[:, -1].values
 
     if selected_features:
         valid = [f for f in selected_features if f in all_features]
