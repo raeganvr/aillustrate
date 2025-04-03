@@ -1,6 +1,15 @@
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://aillustrate.dev"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def root():
