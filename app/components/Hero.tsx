@@ -7,7 +7,7 @@ export default function Hero() {
 
   const pingBackend = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/`);
       const data = await res.json();
       alert(`Message from backend: ${data.message}`);
     } catch (err) {
