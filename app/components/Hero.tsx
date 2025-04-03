@@ -5,6 +5,17 @@ import { motion } from "framer-motion";
 export default function Hero() {
   const router = useRouter();
 
+  const pingBackend = async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/`);
+      const data = await res.json();
+      alert(`Message from backend: ${data.message}`);
+    } catch (err) {
+      alert("Failed to reach backend.");
+      console.error(err);
+    }
+  };
+
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
       <motion.h2
@@ -26,7 +37,7 @@ export default function Hero() {
         NEURAL NETWORKS
       </motion.h1>
       <motion.div
-        className="grid grid-cols-2 gap-4 mb-8"
+        className="grid grid-cols-3 gap-4 mb-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.7 }}
@@ -45,6 +56,12 @@ export default function Hero() {
           }}
         >
           LEARN MORE
+        </button>
+        <button
+          className="px-8 py-2 border border-white rounded-full hover:bg-white hover:text-black transition-colors text-sm tracking-widest"
+          onClick={pingBackend}
+        >
+          PING BACKEND
         </button>
       </motion.div>
     </div>
