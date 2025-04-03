@@ -9,11 +9,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import fetch_california_housing, load_diabetes, load_iris
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 from typing import List
+from functools import lru_cache
 import json
 
 # --------------------------- FastAPI setup ---------------------------
@@ -51,32 +52,33 @@ class NetworkModel(BaseModel):
 
 # --------------------------- Global state ---------------------------
 cached_model = {"model": None}
-trained_model = {"model": None, "X_val": None, "y_val": None, "dataset_name": None}
+trained_model = {"model": None, "X_val": None, "y_val": None, "dataset_name": None, "val_loss": None}
 
 # --------------------------- Helper functions ---------------------------
-def load_dataset(dataset_name: str, selected_features=None, test_size=0.4):
-    if dataset_name == "boston":
-        url = "https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv"
-        df = pd.read_csv(url)
-        all_features = list(df.columns[:-1])
-        y = df.iloc[:, -1].values
-    elif dataset_name == "california":
+@lru_cache(maxsize=4)
+def get_cached_dataset(name: str):
+    if name == "boston":
+        df = pd.read_csv("https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv")
+        return df, list(df.columns[:-1]), df.columns[-1]
+    elif name == "california":
         data = fetch_california_housing()
-        df = pd.DataFrame(data.data, columns=data.feature_names)
-        y = data.target
-        all_features = list(data.feature_names)
-    elif dataset_name == "diabetes":
+        return pd.DataFrame(data.data, columns=data.feature_names), data.feature_names, "target"
+    elif name == "diabetes":
         data = load_diabetes()
-        df = pd.DataFrame(data.data, columns=data.feature_names)
-        y = data.target
-        all_features = list(data.feature_names)
-    elif dataset_name == "iris":
+        return pd.DataFrame(data.data, columns=data.feature_names), data.feature_names, "target"
+    elif name == "iris":
         data = load_iris()
-        df = pd.DataFrame(data.data, columns=data.feature_names)
-        y = to_categorical(data.target)
-        all_features = list(data.feature_names)
-    else:
+        return pd.DataFrame(data.data, columns=data.feature_names), data.feature_names, "target"
+    return None, None, None
+
+def load_dataset(dataset_name: str, selected_features=None, test_size=0.4):
+    df, all_features, target_column = get_cached_dataset(dataset_name)
+    if df is None:
         return None, None, None, None, None
+
+    y = df[target_column].values if dataset_name == "boston" else df.iloc[:, -1].values
+    if dataset_name == "iris":
+        y = to_categorical(load_iris().target)
 
     if selected_features:
         valid = [f for f in selected_features if f in all_features]
@@ -89,7 +91,6 @@ def load_dataset(dataset_name: str, selected_features=None, test_size=0.4):
         input_dim = len(all_features)
 
     X = StandardScaler().fit_transform(X)
-
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=test_size, random_state=42)
     return X_train, X_val, y_train, y_val, input_dim
 
@@ -107,13 +108,13 @@ def build_model(input_dim, hidden_layers, output_size):
         model.compile(optimizer=Adam(learning_rate=0.01), loss="categorical_crossentropy", metrics=["accuracy"])
     return model
 
-# --------------------------- Route: /train/init ---------------------------
+# --------------------------- Routes ---------------------------
+
 @app.post("/train/init")
 async def store_model(model: NetworkModel):
     cached_model["model"] = model
     return {"status": "Model stored"}
 
-# --------------------------- Route: /train/stream ---------------------------
 @app.get("/train/stream")
 def train_model_stream():
     model = cached_model.get("model")
@@ -135,121 +136,49 @@ def train_model_stream():
         "model": nn_model,
         "X_val": X_val,
         "y_val": y_val,
-        "dataset_name": model.datasetName
+        "dataset_name": model.datasetName,
+        "val_loss": None
     })
 
     def generate_events():
         for epoch in range(1, 21):
             history = nn_model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=1, verbose=0)
+            trained_model["val_loss"] = history.history["val_loss"][0]
             yield f"data: {json.dumps({'epoch': epoch, 'loss': history.history['loss'][0], 'val_loss': history.history['val_loss'][0]})}\n\n"
         yield f"data: {json.dumps({'done': True})}\n\n"
 
     return StreamingResponse(generate_events(), media_type="text/event-stream")
 
-# --------------------------- Route: /train ---------------------------
 @app.post("/train")
 async def get_final_metrics():
-    """
-    Returns final accuracy or MAPE + loss after training is done.
-    """
     model = cached_model.get("model")
     nn_model = trained_model.get("model")
-
     if not model or not nn_model:
         return {"error": "Model not initialized or trained"}
 
-    dataset_name = model.datasetName
-
-    # Load the same dataset and parameters
-    selected_features = [param.label for param in model.parameters if param.selected]
-    X_train, X_val, y_train, y_val, _ = load_dataset(dataset_name, selected_features, test_size=model.testSize)
-
-    predictions = nn_model.predict(X_val)
+    predictions = nn_model.predict(trained_model["X_val"])
+    y_val = trained_model["y_val"]
+    dataset_name = trained_model["dataset_name"]
+    val_loss = trained_model["val_loss"]
 
     if dataset_name == "iris":
         predicted_labels = np.argmax(predictions, axis=1)
         true_labels = np.argmax(y_val, axis=1)
         accuracy = np.mean(predicted_labels == true_labels) * 100
-        return {
-            "accuracy": round(accuracy, 2),
-            "loss": None  # Or send final val_loss if needed
-        }
+        return {"accuracy": round(accuracy, 2), "loss": round(val_loss, 4) if val_loss else None}
     else:
         y_val_flat = y_val.flatten() if len(y_val.shape) > 1 else y_val
         predictions_flat = predictions.flatten() if len(predictions.shape) > 1 else predictions
         mape = np.mean(np.abs((y_val_flat - predictions_flat) / (y_val_flat + 1e-8))) * 100
-        return {
-            "mape": round(mape, 2),
-            "loss": None  # You can store the last val_loss in the stream if needed
-        }
+        return {"mape": round(mape, 2), "loss": round(val_loss, 4) if val_loss else None}
 
-# --------------------------- Route: /train/final ---------------------------
-@app.get("/train/final")
-async def get_final_metrics():
-    model = cached_model.get("model")
-    if not model:
-        return JSONResponse(content={"error": "Model not initialized"}, status_code=400)
-
-    dataset_name = model.datasetName
-    selected_features = [param.label for param in model.parameters if param.selected]
-    X_train, X_val, y_train, y_val, input_dim = load_dataset(dataset_name, selected_features, test_size=model.testSize)
-
-    if X_train is None:
-        return {"error": "Invalid dataset or features selected."}
-
-    output_size = 1 if dataset_name in ["boston", "california", "diabetes"] else 3
-    nn_model = build_model(input_dim, [layer.nodes for layer in model.layers[1:-1]], output_size)
-
-    history = nn_model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=20, verbose=0)
-
-    loss_values = history.history.get("loss", [])
-    val_loss_values = history.history.get("val_loss", [])
-    predictions = nn_model.predict(X_val)
-
-    if len(predictions.shape) == 1:  
-        predictions = np.expand_dims(predictions, axis=1)
-    if len(y_val.shape) == 1:
-        y_val = np.expand_dims(y_val, axis=1)
-
-    if dataset_name == "iris":
-        predicted_labels = np.argmax(predictions, axis=1)
-        true_labels = np.argmax(y_val, axis=1)
-        accuracy = np.mean(predicted_labels == true_labels) * 100
-        return {
-            "accuracy": round(accuracy, 2),
-            "loss": round(val_loss_values[-1], 4) if val_loss_values else None
-        }
-    else:
-        y_val_flat = y_val.flatten() if len(y_val.shape) > 1 else y_val
-        predictions_flat = predictions.flatten() if len(predictions.shape) > 1 else predictions
-        mape = np.mean(np.abs((y_val_flat - predictions_flat) / (y_val_flat + 1e-8))) * 100
-        return {
-            "mape": round(mape, 2),
-            "loss": round(val_loss_values[-1], 4) if val_loss_values else None
-        }
-
-# --------------------------- Route: /features ---------------------------
 @app.get("/features/{dataset_name}")
 async def get_features(dataset_name: str):
-    X_train, X_val, y_train, y_val, input_dim = load_dataset(dataset_name)
-    if X_train is None:
-        return {"features": []}
-    
-    if dataset_name == "boston":
-        url = "https://raw.githubusercontent.com/selva86/datasets/master/BostonHousing.csv"
-        df = pd.read_csv(url)
-        return {"features": list(df.columns[:-1])}
-    elif dataset_name == "california":
-        return {"features": list(fetch_california_housing().feature_names)}
-    elif dataset_name == "diabetes":
-        return {"features": list(load_diabetes().feature_names)}
-    elif dataset_name == "iris":
-        return {"features": list(load_iris().feature_names)}
-    return {"features": []}
+    df, all_features, _ = get_cached_dataset(dataset_name)
+    return {"features": all_features if all_features else []}
 
 # --------------------------- Run server ---------------------------
 if __name__ == "__main__":
-    import uvicorn
-    import os
+    import uvicorn, os
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run("main:app", host="0.0.0.0", port=port)

@@ -51,7 +51,7 @@ export default function NetworkPage() {
     const fetchFeatures = async () => {
       try {
         // Optionally, update the URL to include the selected dataset:
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/features/${model.datasetName}`); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/features/${model.datasetName}`); 
         const data = await response.json();
 
         setModel((prevModel) => ({
@@ -133,12 +133,20 @@ export default function NetworkPage() {
       alert("Please select at least one input parameter before training.");
       return;
     }
-  
+    
+    // Clear existing metrics
+    setModel((prev) => ({
+      ...prev,
+      accuracy: undefined,
+      mape: undefined,
+      loss: undefined,
+    }));
+
     setLossGraphData([]);
     
     try {
-      // 1. Init model on backend
-      const initRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/train/init`, { // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      // Init model on backend
+      const initRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/train/init`, { 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(model),
@@ -148,8 +156,8 @@ export default function NetworkPage() {
         throw new Error(`Init failed: ${initRes.status}`);
       }
 
-      // 2. Begin streaming training updates
-      const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_API_BASE}/train/stream`); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      // Begin streaming training updates
+      const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_API_BASE}/train/stream`); 
       const updates: { epoch: number; loss: number; val_loss: number }[] = [];
 
       eventSource.onmessage = async (event) => {
@@ -160,8 +168,8 @@ export default function NetworkPage() {
             eventSource.close();
 
             
-            // 3. Once stream is done, fetch final metrics
-            const finalRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/train/final`); // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            // Once stream is done, fetch final metrics
+            const finalRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/train/final`); 
             const finalData = await finalRes.json();
 
             setModel((prev) => ({

@@ -166,7 +166,6 @@ function SideContents({
 
 // Main tutorial component
 export default function Explore() {
-  // The list of tutorial sections, matching your PDF headings:
   const sections = [
     {
       id: "intro-ai",
